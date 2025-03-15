@@ -1,19 +1,18 @@
 services:
   app:
-    build: .
-    container_name: laravel_app
-    restart: unless-stopped 
-    env_file: .env
-    ports:
-      - "9000:9000"  # Laravel ejecuta PHP-FPM en el puerto 9000
-    working_dir: /var/www
-    volumes:
-      - .:/var/www
-      - /var/www/node_modules
-    networks:
-      - laravel_net
-    depends_on:
-      - nginx
+  build: .
+  container_name: laravel_app
+  restart: unless-stopped
+  env_file: .env
+  ports:
+    - "9000:9000"
+  working_dir: /var/www
+  volumes:
+    - .:/var/www
+    - /var/www/node_modules
+  networks:
+    - laravel_net
+    
 
   nginx:
     image: nginx:latest
