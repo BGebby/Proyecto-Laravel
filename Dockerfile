@@ -37,7 +37,7 @@ RUN npm install && npm run build
 RUN chmod -R 777 storage bootstrap/cache
 
 # Exponemos el puerto en el que Laravel se ejecutará
-EXPOSE 8080
+EXPOSE 9000
 
 # Definimos el comando de arranque
 CMD ["php-fpm"]
