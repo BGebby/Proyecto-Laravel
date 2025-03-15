@@ -2,9 +2,10 @@ services:
   app:
     build: .
     container_name: laravel_app
-    restart: unless-stopped
+    restart: unless-stopped 
+    env_file: .env
     ports:
-      - "9000:9000" 
+      - "9000:9000"  # Laravel ejecuta PHP-FPM en el puerto 9000
     working_dir: /var/www
     volumes:
       - .:/var/www
@@ -12,7 +13,7 @@ services:
     networks:
       - laravel_net
     depends_on:
-      - db
+      - nginx
 
   nginx:
     image: nginx:latest
@@ -28,22 +29,6 @@ services:
     depends_on:
       - app
 
-  db:
-    image: mysql:8.0
-    container_name: laravel_db
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: mydatabase
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    ports:
-      - "3306:3306"  # Puerto estándar de MySQL
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - laravel_net
-
   phpmyadmin:
     image: phpmyadmin
     container_name: phpmyadmin-car
@@ -51,15 +36,11 @@ services:
     ports:
       - "8607:80"
     environment:
-      - PMA_HOST=db
+      - PMA_HOST=${DB_HOST}
+      - PMA_PORT=${DB_PORT}
       - UPLOAD_LIMIT=300M
-    depends_on:
-      - db
     networks:
       - laravel_net
-      
+
 networks:
   laravel_net:
-
-volumes:
-  db_data:
