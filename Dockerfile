@@ -36,8 +36,8 @@ RUN npm install && npm run build
 # Damos permisos a la carpeta de almacenamiento y bootstrap
 RUN chmod -R 777 storage bootstrap/cache
 
-# Exponemos el puerto de Laravel
-EXPOSE 9000
+# Exponemos el puerto en el que Laravel se ejecutará
+EXPOSE 8080
 
 # Definimos el comando de arranque
-CMD ["php-fpm"]
+CMD php artisan serve --host=0.0.0.0 --port=8080

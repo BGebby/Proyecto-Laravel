@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   app:
     build: .
     container_name: laravel_app
     restart: unless-stopped
     ports:
-      - $PORT:$DOCKER_PORT
+      - "8080:8080"  
     working_dir: /var/www
     volumes:
       - .:/var/www
@@ -16,13 +14,12 @@ services:
     depends_on:
       - db
 
-
   nginx:
     image: nginx:latest
     container_name: laravel_nginx
     restart: unless-stopped
     ports:
-      - $PORT_F:$DOCKER_PORT_F
+      - "80:80"  # Render espera que el servicio web escuche en el puerto 80
     volumes:
       - .:/var/www
       - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -36,12 +33,12 @@ services:
     container_name: laravel_db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: $DB_DATABASE
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
-      MYSQL_USER: $DB_USERNAME
-      MYSQL_PASSWORD: $DB_PASSWORD
+      MYSQL_DATABASE: mydatabase
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     ports:
-      - $MYSQLDB_DOCKER_PORT:$DB_PORT
+      - "3306:3306"  # Puerto estándar de MySQL
     volumes:
       - db_data:/var/lib/mysql
     networks:
@@ -52,7 +49,7 @@ services:
     container_name: phpmyadmin-car
     restart: unless-stopped
     ports:
-      - 8607:80
+      - "8607:80"
     environment:
       - PMA_HOST=db
       - UPLOAD_LIMIT=300M
