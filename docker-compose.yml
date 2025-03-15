@@ -4,7 +4,7 @@ services:
     container_name: laravel_app
     restart: unless-stopped
     ports:
-      - "8080:8080"  
+      - "9000"  
     working_dir: /var/www
     volumes:
       - .:/var/www

@@ -40,4 +40,4 @@ RUN chmod -R 777 storage bootstrap/cache
 EXPOSE 8080
 
 # Definimos el comando de arranque
-CMD php artisan serve --host=0.0.0.0 --port=8080
+CMD ["php-fpm"]
