@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     libonig-dev \
     libxml2-dev \
+    nginx \
+    supervisor \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
 # Instalamos Node.js y npm
@@ -38,8 +40,11 @@ RUN chmod -R 777 storage bootstrap/cache
 # Configuración de Nginx
 COPY .docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
+# Copiamos la configuración de supervisor
+COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 # Exponemos el puerto 80
 EXPOSE 80
 
-# Comando para ejecutar Nginx y PHP-FPM
-CMD service php-fpm start && nginx -g 'daemon off;'
+# Comando para ejecutar Supervisor (manejar Nginx y PHP-FPM)
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
