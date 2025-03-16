@@ -28,6 +28,8 @@ RUN chown -R www-data:www-data /var/www
 RUN chown www-data:www-data /etc/nginx/conf.d/default.conf
 RUN chmod 644 /etc/nginx/conf.d/default.conf
 
+RUN which supervisord
+
 USER www-data
 
 EXPOSE 9000
