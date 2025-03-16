@@ -1,4 +1,4 @@
-# Usamos la imagen oficial de PHP con soporte para Laravel
+# Imagen base de PHP con FPM
 FROM php:8.2-fpm
 
 # Instalamos extensiones necesarias
@@ -15,8 +15,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
 # Instalamos Node.js y npm
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-apt-get install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
 
 # Instalamos Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -36,8 +35,11 @@ RUN npm install && npm run build
 # Damos permisos a la carpeta de almacenamiento y bootstrap
 RUN chmod -R 777 storage bootstrap/cache
 
-# Exponemos el puerto en el que Laravel se ejecutará
-EXPOSE 9000
+# Configuración de Nginx
+COPY .docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# Definimos el comando de arranque
-CMD ["php-fpm"]
+# Exponemos el puerto 80
+EXPOSE 80
+
+# Comando para ejecutar Nginx y PHP-FPM
+CMD service php-fpm start && nginx -g 'daemon off;'
