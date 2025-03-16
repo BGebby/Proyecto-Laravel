@@ -31,6 +31,8 @@ COPY . .
 # Instalamos dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
 
+RUN apt-get update && apt-get install -y nginx supervisor
+
 # Instalamos dependencias de npm y construimos los assets
 RUN npm install && npm run build
 
