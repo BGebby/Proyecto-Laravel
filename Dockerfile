@@ -37,6 +37,8 @@ RUN ls -l /usr/sbin/nginx
 RUN ls -l /usr/local/sbin/php-fpm
 
 RUN chmod +x /usr/sbin/nginx
+RUN netstat -tuln | grep 9000
+RUN curl 127.0.0.1:9000
 
 USER www-data
 
