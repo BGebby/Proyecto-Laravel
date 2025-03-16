@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-RUN apt-get update &&  apt-get install -y net-tools \
+RUN apt-get update && apt-get install -y net-tools \
     && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
