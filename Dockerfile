@@ -37,7 +37,7 @@ RUN ls -l /usr/sbin/nginx
 RUN ls -l /usr/local/sbin/php-fpm
 
 RUN chmod +x /usr/sbin/nginx
-RUN chmod +x /usr/sbin/php-fpm
+
 USER www-data
 
 EXPOSE 9000
