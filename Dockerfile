@@ -34,6 +34,8 @@ RUN chown www-data:www-data /etc/nginx/conf.d/default.conf
 RUN chmod 644 /etc/nginx/conf.d/default.conf
 
 RUN ls -l /usr/sbin/nginx
+RUN which php-fpm
+
 RUN ls -l /usr/sbin/php-fpm
 
 RUN chmod +x /usr/sbin/nginx
