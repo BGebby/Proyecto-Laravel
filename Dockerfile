@@ -44,7 +44,7 @@ COPY .docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Exponemos el puerto 80
-EXPOSE 80
+EXPOSE 9000
 
 # Comando para ejecutar Supervisor (manejar Nginx y PHP-FPM)
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
