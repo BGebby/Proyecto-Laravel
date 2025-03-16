@@ -27,7 +27,6 @@ COPY . .
 RUN chmod -R 775 storage bootstrap/cache
 
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-RUN mkdir /etc/supervisor
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 RUN chown -R www-data:www-data /var/www
