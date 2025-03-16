@@ -12,6 +12,12 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
+RUN apt-get update && apt-get install -y nginx
+
+RUN apt-get update && apt-get install -y supervisor
+
+RUN apt-get update && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
