@@ -1,6 +1,7 @@
 FROM php:8.2-fpm
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && && apt-get install -y net-tools \
+    && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -37,7 +38,8 @@ RUN ls -l /usr/sbin/nginx
 RUN ls -l /usr/local/sbin/php-fpm
 
 RUN chmod +x /usr/sbin/nginx
-RUN netstat -tuln | grep 9000
+
+RUN ss -tuln | grep 9000
 RUN curl 127.0.0.1:9000
 
 USER www-data
