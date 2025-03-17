@@ -32,8 +32,14 @@ COPY . /var/www/
 # Establecer el directorio de trabajo
 WORKDIR /var/www/
 
+# Diagnóstico de Red
+RUN ping -c 3 google.com && curl -sSL https://getcomposer.org/versions
+
+# Diagnóstico de PHP y Composer
+RUN php82 -m && php82 /usr/local/bin/composer diagnose
+
 # Instalar dependencias de Composer (usando php82)
-RUN php82 /usr/local/bin/composer install --no-dev --optimize-autoloader -vvv --memory-limit=-1
+RUN php82 /usr/local/bin/composer install --no-dev --optimize-autoloader -vvv
 
 # Permisos (Ajuste de permisos y verificación)
 RUN chmod -R 775 storage bootstrap/cache
@@ -49,7 +55,7 @@ RUN chown -R nginx:nginx /var/lib/nginx/
 
 # Verificar si php-fpm esta escuchando en el puerto 9000.
 RUN ss -tuln | grep 9000 || true
-RUN ls -l /usr/sbin/php82-fpm #Verificamos si existe el ejecutable.
+RUN ls -l /usr/sbin/php82-fpm
 RUN export PATH=$PATH:/usr/sbin && php82-fpm -t
 
 # Exponer el puerto 9000
