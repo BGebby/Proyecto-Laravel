@@ -20,7 +20,8 @@ COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 
 # Copiar la aplicación
 COPY . /var/www/
-
+#instalamos composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Establecer el directorio de trabajo
 WORKDIR /var/www/
 
@@ -28,11 +29,14 @@ WORKDIR /var/www/
 RUN chmod -R 775 storage bootstrap/cache
 RUN chown -R www-data:www-data /var/www
 
+
 # Permisos nginx
 RUN mkdir -p /var/lib/nginx/logs && chown -R nginx:nginx /var/lib/nginx/logs && chmod -R 755 /var/lib/nginx/logs
 RUN mkdir -p /var/lib/nginx/tmp/client_body && chown -R nginx:nginx /var/lib/nginx/tmp/client_body && chmod -R 755 /var/lib/nginx/tmp/client_body
 RUN chown -R nginx:nginx /var/lib/nginx/
 
+# Instalamos dependencias de Laravel
+RUN composer install --no-dev --optimize-autoloader
 # Exponer el puerto 9000
 EXPOSE 9000
 
