@@ -5,7 +5,7 @@ RUN apk add --no-cache net-tools nginx supervisor
 RUN docker-php-ext-install pdo pdo_mysql
 
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY ./.docker/nginx/nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /var/www
 
@@ -15,12 +15,11 @@ RUN chmod -R 775 storage bootstrap/cache
 
 RUN chown -R www-data:www-data /var/www
 RUN chown www-data:www-data /etc/nginx/conf.d/default.conf
-RUN chown www-data:www-data /etc/nginx/conf.d/nginx.conf
+RUN chown www-data:www-data /etc/nginx/nginx.conf # Corregido
 RUN chmod 644 /etc/nginx/conf.d/default.conf
-RUN chmod 644 /etc/nginx/conf.d/nginx.conf
+RUN chmod 644 /etc/nginx/nginx.conf # Corregido
 
-RUN mkdir -p /var/lib/nginx/logs && chown -R root:root /var/lib/nginx/logs
-
+RUN mkdir -p /var/lib/nginx/logs && chown -R www-data:www-data /var/lib/nginx/logs
 
 USER www-data
 
