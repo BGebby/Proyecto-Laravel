@@ -37,8 +37,8 @@ COPY . /var/www/
 # Establecer el directorio de trabajo
 WORKDIR /var/www/
 
-# Instalar dependencias de Composer
-RUN composer install --no-dev --optimize-autoloader
+# Instalar dependencias de Composer (usando php82)
+RUN php82 /usr/local/bin/composer install --no-dev --optimize-autoloader
 
 # Permisos
 RUN chmod -R 775 storage bootstrap/cache
