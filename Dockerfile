@@ -10,8 +10,7 @@ RUN apt-get update && apt-get install -y net-tools \
     git \
     curl \
     libonig-dev \
-    libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+    libxml2-dev
 
 RUN apt-get update && apt-get install -y nginx
 
@@ -35,12 +34,16 @@ RUN chown www-data:www-data /etc/nginx/conf.d/default.conf
 RUN chmod 644 /etc/nginx/conf.d/default.conf
 
 RUN ls -l /usr/sbin/nginx
+RUN which php-fpm
 RUN ls -l /usr/local/sbin/php-fpm
 
 RUN chmod +x /usr/sbin/nginx
 
+RUN sed -i 's/listen = \/run\/php\/php8.2-fpm.sock/listen = 9000/' /etc/php/8.2/fpm/pool.d/www.conf
+
 RUN ss -tuln | grep 9000
 RUN curl 127.0.0.1:9000
+RUN cat /var/log/php8.2-fpm.log
 
 USER www-data
 
