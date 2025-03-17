@@ -1,28 +1,40 @@
-FROM php:8.2-fpm-alpine
+FROM nginx:alpine
 
-RUN apk add --no-cache net-tools nginx supervisor
+# Instalar el paquete shadow y las extensiones necesarias
+RUN apk add --no-cache shadow php82-fpm php82-pdo_mysql php82-mysqli supervisor
 
-RUN docker-php-ext-install pdo pdo_mysql
+# Crear el usuario www-data (el grupo ya existe)
+RUN useradd -u 1000 -g www-data www-data
 
+# Copiar archivos de configuración de Nginx
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./.docker/nginx/nginx.conf /etc/nginx/nginx.conf
 
-WORKDIR /var/www
+# Copiar archivos de configuración de PHP-FPM
+# (Asumiendo que tienes archivos de configuración de PHP-FPM en ./docker/php-fpm/)
+#COPY ./docker/php-fpm/php-fpm.conf /etc/php82/php-fpm.conf
+#COPY ./docker/php-fpm/www.conf /etc/php82/php-fpm.d/www.conf
 
-COPY . .
+# Copiar configuración de supervisor
+COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 
+# Copiar la aplicación
+COPY . /var/www/
+
+# Establecer el directorio de trabajo
+WORKDIR /var/www/
+
+# Permisos
 RUN chmod -R 775 storage bootstrap/cache
-
 RUN chown -R www-data:www-data /var/www
-RUN chown www-data:www-data /etc/nginx/conf.d/default.conf
-RUN chown www-data:www-data /etc/nginx/nginx.conf # Corregido
-RUN chmod 644 /etc/nginx/conf.d/default.conf
-RUN chmod 644 /etc/nginx/nginx.conf # Corregido
 
-RUN mkdir -p /var/lib/nginx/logs && chown -R www-data:www-data /var/lib/nginx/logs
+# Permisos nginx
+RUN mkdir -p /var/lib/nginx/logs && chown -R nginx:nginx /var/lib/nginx/logs && chmod -R 755 /var/lib/nginx/logs
+RUN mkdir -p /var/lib/nginx/tmp/client_body && chown -R nginx:nginx /var/lib/nginx/tmp/client_body && chmod -R 755 /var/lib/nginx/tmp/client_body
+RUN chown -R nginx:nginx /var/lib/nginx/
 
-USER www-data
-
+# Exponer el puerto 9000
 EXPOSE 9000
 
+# Comando para iniciar Supervisor
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
