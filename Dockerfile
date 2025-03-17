@@ -10,9 +10,6 @@ RUN php82 -v
 # Instalar extensiones necesarias, incluyendo las requeridas por Composer, Laravel y SQLite
 RUN apk add --no-cache php82-fpm php82-pdo_mysql php82-mysqli php82-curl php82-phar php82-iconv php82-mbstring php82-session php82-fileinfo php82-tokenizer php82-dom php82-pdo_sqlite shadow supervisor curl
 
-# Actualizar el PATH
-RUN export PATH=$PATH:/usr/bin && which php82
-
 # Crear el usuario www-data (el grupo ya existe)
 RUN useradd -u 1000 -g www-data www-data
 
@@ -22,6 +19,11 @@ RUN curl -sS https://getcomposer.org/installer | php82 -- --install-dir=/usr/loc
 # Copiar archivos de configuración de Nginx
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./.docker/nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Copiar archivos de configuración de PHP-FPM
+# (Asumiendo que tienes archivos de configuración de PHP-FPM en ./docker/php-fpm/)
+#COPY ./docker/php-fpm/php-fpm.conf /etc/php82/php-fpm.conf
+#COPY ./docker/php-fpm/www.conf /etc/php82/php-fpm.d/www.conf
 
 # Copiar configuración de supervisor
 COPY ./supervisord.conf /etc/supervisor/supervisord.conf
@@ -46,7 +48,7 @@ RUN mkdir -p /var/lib/nginx/tmp/client_body && chown -R nginx:nginx /var/lib/ngi
 RUN chown -R nginx:nginx /var/lib/nginx/
 
 # Verificar si php-fpm esta escuchando en el puerto 9000.
-RUN netstat -tuln | grep 9000
+RUN ss -tuln | grep 9000 || true
 
 # Exponer el puerto 9000
 EXPOSE 9000
