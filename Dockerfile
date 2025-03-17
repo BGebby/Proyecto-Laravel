@@ -23,6 +23,11 @@ RUN curl -sS https://getcomposer.org/installer | php82 -- --install-dir=/usr/loc
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./.docker/nginx/nginx.conf /etc/nginx/nginx.conf
 
+# Copiar archivos de configuración de PHP-FPM
+# (Asumiendo que tienes archivos de configuración de PHP-FPM en ./docker/php-fpm/)
+#COPY ./docker/php-fpm/php-fpm.conf /etc/php82/php-fpm.conf
+#COPY ./docker/php-fpm/www.conf /etc/php82/php-fpm.d/www.conf
+
 # Copiar configuración de supervisor
 COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 
@@ -33,7 +38,7 @@ COPY . /var/www/
 WORKDIR /var/www/
 
 # Diagnóstico de Red
-RUN ping -c 3 google.com && curl -sSL https://getcomposer.org/versions
+RUN curl -sSL google.com && curl -sSL https://getcomposer.org/versions
 
 # Diagnóstico de PHP y Composer
 RUN php82 -m && php82 /usr/local/bin/composer diagnose
