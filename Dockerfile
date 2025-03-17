@@ -1,7 +1,11 @@
 FROM nginx:alpine
 
 # Instalar PHP, Composer y extensiones necesarias
-RUN apk add --no-cache php82 php82-fpm php82-pdo_mysql php82-mysqli php82-curl shadow supervisor curl
+RUN apk update && apk add --no-cache php82 php82-fpm php82-pdo_mysql php82-mysqli php82-curl shadow supervisor curl
+
+# Verificar la instalación de PHP y actualizar el PATH
+RUN which php
+RUN export PATH=$PATH:/usr/bin && which php
 
 # Crear el usuario www-data (el grupo ya existe)
 RUN useradd -u 1000 -g www-data www-data
@@ -12,6 +16,11 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copiar archivos de configuración de Nginx
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./.docker/nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Copiar archivos de configuración de PHP-FPM
+# (Asumiendo que tienes archivos de configuración de PHP-FPM en ./docker/php-fpm/)
+#COPY ./docker/php-fpm/php-fpm.conf /etc/php82/php-fpm.conf
+#COPY ./docker/php-fpm/www.conf /etc/php82/php-fpm.d/www.conf
 
 # Copiar configuración de supervisor
 COPY ./supervisord.conf /etc/supervisor/supervisord.conf
