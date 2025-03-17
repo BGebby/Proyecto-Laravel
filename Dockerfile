@@ -7,17 +7,26 @@ RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 RUN apk add --no-cache php82
 RUN php82 -v
 
-# Instalar extensiones necesarias, incluyendo las requeridas por Composer y Laravel
-RUN apk add --no-cache php82-fpm php82-pdo_mysql php82-mysqli php82-curl php82-phar php82-iconv php82-mbstring php82-session php82-fileinfo php82-tokenizer php82-dom shadow supervisor curl
+# Instalamos extensiones necesarias
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    libonig-dev \
+    libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
+    # Instalamos Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Actualizar el PATH
 RUN export PATH=$PATH:/usr/bin && which php82
 
 # Crear el usuario www-data (el grupo ya existe)
 RUN useradd -u 1000 -g www-data www-data
-
-# Instalar Composer
-RUN curl -sS https://getcomposer.org/installer | php82 -- --install-dir=/usr/local/bin --filename=composer
 
 # Copiar archivos de configuración de Nginx
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
@@ -44,6 +53,9 @@ RUN chown -R www-data:www-data /var/www
 RUN mkdir -p /var/lib/nginx/logs && chown -R nginx:nginx /var/lib/nginx/logs && chmod -R 755 /var/lib/nginx/logs
 RUN mkdir -p /var/lib/nginx/tmp/client_body && chown -R nginx:nginx /var/lib/nginx/tmp/client_body && chmod -R 755 /var/lib/nginx/tmp/client_body
 RUN chown -R nginx:nginx /var/lib/nginx/
+
+# Instalamos dependencias de Laravel
+RUN composer install --no-dev --optimize-autoloader
 
 # Exponer el puerto 9000
 EXPOSE 9000
