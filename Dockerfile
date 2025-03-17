@@ -40,9 +40,9 @@ RUN ls -l /usr/local/sbin/php-fpm
 RUN chmod +x /usr/sbin/nginx
 
 RUN find / -name "php-fpm.conf" 2>/dev/null
-RUN cat /etc/php/8.2/fpm/php-fpm.conf
+RUN cat /usr/local/etc/php-fpm.conf
 
-RUN sed -i 's/listen = \/run\/php\/php8.2-fpm.sock/listen = 9000/' /etc/php/8.2/fpm/pool.d/www.conf
+RUN sed -i 's/listen = \/run\/php\/php8.2-fpm.sock/listen = 9000/' /usr/local/etc/php-fpm.conf
 
 RUN ss -tuln | grep 9000
 RUN curl 127.0.0.1:9000
