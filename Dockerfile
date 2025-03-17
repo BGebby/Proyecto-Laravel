@@ -44,6 +44,7 @@ RUN cat /usr/local/etc/php-fpm.conf
 RUN grep "include=" /usr/local/etc/php-fpm.conf
 RUN ls -l /usr/local/etc/php-fpm.d/
 RUN grep -r "listen =" /usr/local/etc/
+RUN grep -r "listen =" /
 
 RUN sed -i 's/listen = \/run\/php\/php8.2-fpm.sock/listen = 9000/' /usr/local/etc/php-fpm.conf
 
