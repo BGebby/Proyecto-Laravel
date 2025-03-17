@@ -35,7 +35,7 @@ WORKDIR /var/www/
 # Instalar dependencias de Composer (usando php82)
 RUN php82 /usr/local/bin/composer install --no-dev --optimize-autoloader
 
-# Permisos
+# Permisos (Ajuste de permisos)
 RUN chmod -R 775 storage bootstrap/cache
 RUN chown -R www-data:www-data /var/www
 
