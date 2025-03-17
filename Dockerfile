@@ -1,24 +1,11 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm-alpine
 
-RUN apt-get update && apt-get install -y net-tools \
-    && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zip \
-    unzip \
-    git \
-    curl \
-    libonig-dev \
-    libxml2-dev
+RUN apk add --no-cache net-tools nginx supervisor
 
-RUN apt-get update && apt-get install -y nginx
+RUN docker-php-ext-install pdo pdo_mysql
 
-RUN apt-get update && apt-get install -y supervisor
-
-RUN apt-get update && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 WORKDIR /var/www
 
@@ -26,31 +13,9 @@ COPY . .
 
 RUN chmod -R 775 storage bootstrap/cache
 
-COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY supervisord.conf /etc/supervisor/supervisord.conf
-
 RUN chown -R www-data:www-data /var/www
 RUN chown www-data:www-data /etc/nginx/conf.d/default.conf
 RUN chmod 644 /etc/nginx/conf.d/default.conf
-
-RUN ls -l /usr/sbin/nginx
-RUN which php-fpm
-RUN ls -l /usr/local/sbin/php-fpm
-
-RUN chmod +x /usr/sbin/nginx
-
-RUN find / -name "php-fpm.conf" 2>/dev/null
-RUN cat /usr/local/etc/php-fpm.conf
-RUN grep "include=" /usr/local/etc/php-fpm.conf
-RUN ls -l /usr/local/etc/php-fpm.d/
-RUN grep -r "listen =" /usr/local/etc/
-RUN grep -r "listen =" /
-
-RUN sed -i 's/listen = \/run\/php\/php8.2-fpm.sock/listen = 9000/' /usr/local/etc/php-fpm.conf
-
-RUN ss -tuln | grep 9000
-RUN curl 127.0.0.1:9000
-RUN cat /var/log/php8.2-fpm.log
 
 USER www-data
 
