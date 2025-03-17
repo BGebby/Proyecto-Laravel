@@ -38,13 +38,13 @@ COPY . /var/www/
 WORKDIR /var/www/
 
 # Diagnóstico de Red
-RUN curl -sSL google.com && curl -sSL https://getcomposer.org/versions
+RUN ping -c 3 google.com && curl -sSL https://getcomposer.org/versions
 
 # Diagnóstico de PHP y Composer
 RUN php82 -m && php82 /usr/local/bin/composer diagnose
 
 # Instalar dependencias de Composer (usando php82)
-RUN php82 /usr/local/bin/composer install --no-dev --optimize-autoloader -vvv
+RUN php82 /usr/local/bin/composer install --no-dev --optimize-autoloader -vvv --memory-limit=-1
 
 # Permisos (Ajuste de permisos y verificación)
 RUN chmod -R 775 storage bootstrap/cache
