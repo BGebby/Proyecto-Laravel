@@ -17,7 +17,8 @@ RUN chown -R www-data:www-data /var/www
 RUN chown www-data:www-data /etc/nginx/conf.d/default.conf
 RUN chmod 644 /etc/nginx/conf.d/default.conf
 
-RUN mkdir -p /var/lib/nginx/logs && chown -R www-data:www-data /var/lib/nginx/logs
+RUN mkdir -p /var/lib/nginx/logs && chown -R root:root /var/lib/nginx/logs
+
 
 USER www-data
 
