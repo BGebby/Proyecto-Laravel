@@ -35,14 +35,18 @@ WORKDIR /var/www/
 # Instalar dependencias de Composer (usando php82)
 RUN php82 /usr/local/bin/composer install --no-dev --optimize-autoloader
 
-# Permisos (Ajuste de permisos)
+# Permisos (Ajuste de permisos y verificación)
 RUN chmod -R 775 storage bootstrap/cache
 RUN chown -R www-data:www-data /var/www
+RUN ls -l /var/www/storage && ls -l /var/www/bootstrap/cache
 
 # Permisos nginx
 RUN mkdir -p /var/lib/nginx/logs && chown -R nginx:nginx /var/lib/nginx/logs && chmod -R 755 /var/lib/nginx/logs
 RUN mkdir -p /var/lib/nginx/tmp/client_body && chown -R nginx:nginx /var/lib/nginx/tmp/client_body && chmod -R 755 /var/lib/nginx/tmp/client_body
 RUN chown -R nginx:nginx /var/lib/nginx/
+
+# Verificar si php-fpm esta escuchando en el puerto 9000.
+RUN netstat -tuln | grep 9000
 
 # Exponer el puerto 9000
 EXPOSE 9000
