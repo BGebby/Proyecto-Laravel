@@ -1,13 +1,12 @@
 FROM nginx:alpine
 
-# Instalar el paquete shadow y las extensiones necesarias
-RUN apk add --no-cache shadow php82-fpm php82-pdo_mysql php82-mysqli supervisor
+# Instalar PHP, Composer y extensiones necesarias
+RUN apk add --no-cache php82 php82-fpm php82-pdo_mysql php82-mysqli php82-curl shadow supervisor curl
 
 # Crear el usuario www-data (el grupo ya existe)
 RUN useradd -u 1000 -g www-data www-data
 
 # Instalar Composer
-RUN apk add --no-cache curl
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copiar archivos de configuración de Nginx
