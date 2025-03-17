@@ -7,8 +7,8 @@ RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 RUN apk add --no-cache php82
 RUN php82 -v
 
-# Instalar extensiones necesarias, incluyendo las requeridas por Composer, Laravel y SQLite
-RUN apk add --no-cache php82-fpm php82-pdo_mysql php82-mysqli php82-curl php82-phar php82-iconv php82-mbstring php82-session php82-fileinfo php82-tokenizer php82-dom php82-pdo_sqlite shadow supervisor curl
+# Instalar extensiones necesarias, incluyendo las requeridas por Composer, Laravel y SQLite, zip
+RUN apk add --no-cache php82-fpm php82-pdo_mysql php82-mysqli php82-curl php82-phar php82-iconv php82-mbstring php82-session php82-fileinfo php82-tokenizer php82-dom php82-pdo_sqlite shadow supervisor curl php82-zip
 
 # Instalar procps e iproute2
 RUN apk add --no-cache procps iproute2
@@ -43,8 +43,11 @@ RUN curl -sSL google.com && curl -sSL https://getcomposer.org/versions
 # Diagnóstico de PHP y Composer
 RUN php82 -m && php82 /usr/local/bin/composer diagnose
 
+# Limpiar la caché de Composer
+RUN rm -rf /root/.composer/cache
+
 # Instalar dependencias de Composer (usando php82)
-RUN php82 /usr/local/bin/composer install --no-dev --optimize-autoloader -vvv
+RUN php82 /usr/local/bin/composer install --no-cache --no-dev --optimize-autoloader -vvv
 
 # Permisos (Ajuste de permisos y verificación)
 RUN chmod -R 775 storage bootstrap/cache
