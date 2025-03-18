@@ -1,7 +1,10 @@
-FROM nginx:alpine
+FROM alpine:latest
 
 # Actualizar apk y repositorios
 RUN apk update --no-cache && apk upgrade --no-cache && rm -rf /var/cache/apk/*
+
+# Verificar la versión de Alpine Linux
+RUN cat /etc/os-release
 
 # Instalar PHP y verificar la versión
 RUN apk add --no-cache php82
