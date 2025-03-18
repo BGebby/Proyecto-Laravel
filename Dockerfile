@@ -63,7 +63,9 @@ RUN chown -R nginx:nginx /var/lib/nginx/
 
 # Verificar si php-fpm esta escuchando en el puerto 9000.
 RUN ss -tuln | grep 9000 || true
-RUN ls /usr/sbin/php82-*
+RUN apk info php82-fpm
+RUN apk -L php82-fpm
+RUN apk add --no-cache --force-reinstall php82-fpm
 RUN export PATH=$PATH:/usr/sbin && php82-fpm -t
 
 # Exponer el puerto 9000
