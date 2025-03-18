@@ -19,8 +19,11 @@ RUN apk fix
 # Actualizar cache
 RUN apk update --no-cache
 
+# Verificar GIDs usados.
+RUN cat /etc/group
+
 # Crear usuario y grupo nginx
-RUN addgroup -g 101 nginx && adduser -u 101 -G nginx -s /bin/sh -D nginx
+RUN addgroup -g 102 nginx && adduser -u 102 -G nginx -s /bin/sh -D nginx
 
 # Instalar PHP y verificar la versión
 RUN apk add --no-cache php82
