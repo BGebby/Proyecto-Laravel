@@ -87,8 +87,8 @@ RUN chown -R nginx:nginx /var/lib/nginx/
 RUN ss -tuln | grep 9000 || true
 RUN apk info php82-fpm
 RUN apk list -v php82-fpm
-RUN find / -name php82-fpm
-RUN export PATH=$PATH:$(dirname $(find / -name php82-fpm))
+RUN ls -l /usr/sbin/php82-fpm
+RUN export PATH=$PATH:/usr/sbin
 RUN echo $PATH
 RUN which php82-fpm
 RUN ls -l $(which php82-fpm)
