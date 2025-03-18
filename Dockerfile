@@ -1,8 +1,8 @@
-FROM alpine:3.19
+FROM alpine:edge
 
 # Cambiar espejo de repositorio
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.19/main" > /etc/apk/repositories
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.19/community" >> /etc/apk/repositories
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" > /etc/apk/repositories
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 
 # Actualizar apk y repositorios, limpiar cache
 RUN apk update --no-cache --allow-untrusted && apk upgrade --no-cache && rm -rf /var/cache/apk/*
@@ -18,9 +18,6 @@ RUN apk fix
 
 # Actualizar cache
 RUN apk update --no-cache
-
-# Reinstalar apk.
-RUN apk add --no-cache --force-reinstall apk
 
 # Crear usuario y grupo nginx
 RUN addgroup -g 101 nginx && adduser -u 101 -G nginx -s /bin/sh -D nginx
