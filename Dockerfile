@@ -4,8 +4,8 @@ FROM alpine:edge
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" > /etc/apk/repositories
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 
-# Actualizar apk y repositorios, limpiar cache
-RUN apk update --no-cache --allow-untrusted && apk upgrade --no-cache && rm -rf /var/cache/apk/*
+# Limpiar cache y forzar actualización
+RUN rm -rf /var/cache/apk/* && apk update --no-cache --allow-untrusted
 
 # Verificar la versión de Alpine Linux
 RUN cat /etc/os-release
@@ -87,6 +87,9 @@ RUN chown -R nginx:nginx /var/lib/nginx/
 RUN ss -tuln | grep 9000 || true
 RUN apk info php82-fpm
 RUN apk list -v php82-fpm
+RUN apk verify php82-fpm
+RUN find / -name php82-fpm 2>/dev/null
+RUN apk add --no-cache --force-reinstall php82-fpm
 RUN ls -l /usr/sbin/php82-fpm
 RUN export PATH=$PATH:/usr/sbin
 RUN echo $PATH
