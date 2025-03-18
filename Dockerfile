@@ -17,7 +17,7 @@ RUN apk --version
 RUN apk fix
 
 # Actualizar cache
-RUN apk --update-cache
+RUN apk update --no-cache
 
 # Reinstalar apk.
 RUN apk add --no-cache --force-reinstall apk
