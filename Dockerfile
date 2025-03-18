@@ -1,32 +1,36 @@
-FROM alpine:edge
+FROM nginx:alpine
 
-# Cambiar espejo de repositorio
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" > /etc/apk/repositories
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+# Instalar el paquete shadow y las extensiones necesarias
+RUN apk add --no-cache shadow php82-fpm php82-pdo_mysql php82-mysqli supervisor
 
-# Limpiar cache y forzar actualización
-RUN rm -rf /var/cache/apk/* && apk update --no-cache --allow-untrusted
+# Crear el usuario www-data (el grupo ya existe)
+RUN useradd -u 1000 -g www-data www-data
 
-# Verificar la version de apk.
-RUN apk --version
+# Copiar archivos de configuración de Nginx
+COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./.docker/nginx/nginx.conf /etc/nginx/nginx.conf
 
-# Actualizar cache
-RUN apk update --no-cache
-RUN apk upgrade --no-cache
 
-# Instalar php fpm
-RUN apk add --no-cache php82-fpm
+# Copiar configuración de supervisor
+COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 
-# Verificaciones
-RUN apk info php82-fpm
-RUN apk list -v php82-fpm
-RUN apk verify php82-fpm
-RUN find / -name php82-fpm 2>/dev/null
-RUN ls -l /usr/sbin/php82-fpm
-RUN cat /etc/apk/repositories
-RUN df -h
+# Copiar la aplicación
+COPY . /var/www/
 
-# Pausa
-RUN sleep 30
+# Establecer el directorio de trabajo
+WORKDIR /var/www/
 
-CMD ["tail", "-f", "/dev/null"]
+# Permisos
+RUN chmod -R 775 storage bootstrap/cache
+RUN chown -R www-data:www-data /var/www
+
+# Permisos nginx
+RUN mkdir -p /var/lib/nginx/logs && chown -R nginx:nginx /var/lib/nginx/logs && chmod -R 755 /var/lib/nginx/logs
+RUN mkdir -p /var/lib/nginx/tmp/client_body && chown -R nginx:nginx /var/lib/nginx/tmp/client_body && chmod -R 755 /var/lib/nginx/tmp/client_body
+RUN chown -R nginx:nginx /var/lib/nginx/
+
+# Exponer el puerto 9000
+EXPOSE 9000
+
+# Comando para iniciar Supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
