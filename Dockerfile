@@ -6,6 +6,9 @@ RUN apk update --no-cache && apk upgrade --no-cache && rm -rf /var/cache/apk/*
 # Verificar la versión de Alpine Linux
 RUN cat /etc/os-release
 
+# Crear usuario y grupo nginx
+RUN addgroup -g 101 nginx && adduser -u 101 -G nginx -s /bin/sh -D nginx
+
 # Instalar PHP y verificar la versión
 RUN apk add --no-cache php82
 RUN php82 -v
