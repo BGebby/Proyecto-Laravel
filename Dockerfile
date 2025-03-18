@@ -1,4 +1,8 @@
-FROM alpine:3.20
+FROM alpine:3.19
+
+# Cambiar espejo de repositorio
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.19/main" > /etc/apk/repositories
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.19/community" >> /etc/apk/repositories
 
 # Actualizar apk y repositorios, limpiar cache
 RUN apk update --no-cache --allow-untrusted && apk upgrade --no-cache && rm -rf /var/cache/apk/*
@@ -8,6 +12,12 @@ RUN cat /etc/os-release
 
 # Verificar la version de apk.
 RUN apk --version
+
+# Reparar instalación de paquetes
+RUN apk fix
+
+# Actualizar cache
+RUN apk --update-cache
 
 # Reinstalar apk.
 RUN apk add --no-cache --force-reinstall apk
