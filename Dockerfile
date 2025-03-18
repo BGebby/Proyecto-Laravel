@@ -1,10 +1,16 @@
-FROM alpine:latest
+FROM alpine:3.20
 
-# Actualizar apk y repositorios
-RUN apk update --no-cache && apk upgrade --no-cache && rm -rf /var/cache/apk/*
+# Actualizar apk y repositorios, limpiar cache
+RUN apk update --no-cache --allow-untrusted && apk upgrade --no-cache && rm -rf /var/cache/apk/*
 
 # Verificar la versión de Alpine Linux
 RUN cat /etc/os-release
+
+# Verificar la version de apk.
+RUN apk --version
+
+# Reinstalar apk.
+RUN apk add --no-cache --force-reinstall apk
 
 # Crear usuario y grupo nginx
 RUN addgroup -g 101 nginx && adduser -u 101 -G nginx -s /bin/sh -D nginx
