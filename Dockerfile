@@ -72,6 +72,9 @@ RUN rm -rf /root/.composer/cache
 # Eliminar composer.lock
 RUN rm -f /var/www/composer.lock
 
+# Actualizar Composer
+RUN composer self-update
+
 # Instalar dependencias de Composer (usando php82)
 RUN composer dump-autoload
 RUN composer clear-cache
