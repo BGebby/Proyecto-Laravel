@@ -25,7 +25,7 @@ WORKDIR /var/www
 COPY . .
 
 # Copiamos configuración de Nginx
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Damos permisos a la carpeta de almacenamiento y bootstrap
 RUN chmod -R 777 storage bootstrap/cache
