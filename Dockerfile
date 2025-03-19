@@ -3,6 +3,7 @@ FROM php:8.2-fpm
 
 # Instalamos extensiones necesarias
 RUN apt-get update && apt-get install -y \
+    nginx \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -23,14 +24,17 @@ WORKDIR /var/www
 # Copiamos los archivos de la aplicación
 COPY . .
 
+# Copiamos configuración de Nginx
+COPY default.conf /etc/nginx/conf.d/default.conf
+
 # Damos permisos a la carpeta de almacenamiento y bootstrap
 RUN chmod -R 777 storage bootstrap/cache
 
 # Instalamos dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Exponemos el puerto de Laravel
-EXPOSE 9000
+# Expone el puerto 80 para Nginx
+EXPOSE 80
 
-# Definimos el comando de arranque
-CMD ["php-fpm"]
+# Inicia Nginx y PHP-FPM al mismo tiempo
+CMD ["sh", "-c", "service nginx start && php-fpm -F"]
