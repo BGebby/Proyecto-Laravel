@@ -24,8 +24,6 @@ COPY . .
 
 #copiamos la configuracion de nginx
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-RUN service nginx restart && nginx -t && service nginx status
-
 
 # Damos permisos a la carpeta de almacenamiento y bootstrap
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
