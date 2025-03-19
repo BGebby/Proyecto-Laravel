@@ -27,9 +27,9 @@ COPY . .
 # Copiamos configuración de Nginx
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
-RUN nginx -t
+#RUN nginx -t
 
-#RUN service nginx restart && nginx -t && service nginx status
+RUN service nginx restart && nginx -t && service nginx status
 
 # Damos permisos a la carpeta de almacenamiento y bootstrap
 #RUN chmod -R 777 storage bootstrap/cache
@@ -39,6 +39,8 @@ RUN chmod -R 755 /var/www/public
 
 # Instalamos dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
+RUN apt-get update && apt-get install -y iproute2
+RUN echo "PHP-FPM Internal IP: $(hostname -I)" 
 
 RUN ls -l /var/www/resources/views
 
