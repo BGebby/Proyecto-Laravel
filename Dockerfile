@@ -27,6 +27,8 @@ COPY . .
 # Copiamos configuración de Nginx
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
+RUN service nginx restart && nginx -t && service nginx status
+
 # Damos permisos a la carpeta de almacenamiento y bootstrap
 RUN chmod -R 777 storage bootstrap/cache
 
@@ -39,4 +41,6 @@ RUN ls -l /var/www/public
 EXPOSE 80
 
 # Inicia Nginx y PHP-FPM al mismo tiempo
-CMD ["sh", "-c", "service nginx start && php-fpm -F"]
+#CMD ["sh", "-c", "service nginx start && php-fpm -F"]
+CMD ["sh", "-c", "service nginx start && php-fpm -F && service php8.2-fpm status"]
+
