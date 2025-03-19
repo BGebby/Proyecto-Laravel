@@ -30,12 +30,17 @@ COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 RUN service nginx restart && nginx -t && service nginx status
 
 # Damos permisos a la carpeta de almacenamiento y bootstrap
-RUN chmod -R 777 storage bootstrap/cache
+#RUN chmod -R 777 storage bootstrap/cache
+RUN chmod -R 777 /var/www/storage /var/www/bootstrap/cache
+
 
 # Instalamos dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
 
+RUN ls -l /var/www/
+RUN ls -l /var/www/resources/views
 RUN ls -l /var/www/public
+
 
 # Expone el puerto 80 para Nginx
 EXPOSE 80
