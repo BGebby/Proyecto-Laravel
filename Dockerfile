@@ -46,5 +46,7 @@ EXPOSE 80
 
 # Inicia Nginx y PHP-FPM al mismo tiempo
 #CMD ["sh", "-c", "service nginx start && php-fpm -F"]
-CMD ["sh", "-c", "service nginx start && php-fpm -F && service php8.2-fpm status"]
+#CMD ["sh", "-c", "service nginx start && php-fpm -F && service php8.2-fpm status"]
+CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
+
 
