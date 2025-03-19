@@ -69,6 +69,9 @@ RUN php82 -m && php82 /usr/local/bin/composer diagnose
 # Limpiar la caché de Composer
 RUN rm -rf /root/.composer/cache
 
+# Eliminar composer.lock
+RUN rm -f /var/www/composer.lock
+
 # Instalar dependencias de Composer (usando php82)
 RUN composer dump-autoload
 RUN composer clear-cache
