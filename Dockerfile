@@ -1,7 +1,8 @@
 FROM php:8.2-fpm
 
-# Instalamos extensiones necesarias
+# Actualizamos la lista de paquetes y instalamos dependencias
 RUN apt-get update && apt-get install -y \
+    nginx \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -22,7 +23,7 @@ WORKDIR /var/www
 # Copiamos los archivos de la aplicación
 COPY . .
 
-#copiamos la configuracion de nginx
+# Copiamos la configuración de Nginx
 COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Damos permisos a la carpeta de almacenamiento y bootstrap
