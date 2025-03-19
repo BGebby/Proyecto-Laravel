@@ -1,9 +1,7 @@
-# Usamos la imagen oficial de PHP con soporte para Laravel
 FROM php:8.2-fpm
 
 # Instalamos extensiones necesarias
 RUN apt-get update && apt-get install -y \
-    nginx \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -24,15 +22,7 @@ WORKDIR /var/www
 # Copiamos los archivos de la aplicación
 COPY . .
 
-# Copiamos configuración de Nginx
-#COPY ./.docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-
-#RUN nginx -t
-
-RUN service nginx restart && nginx -t && service nginx status
-
 # Damos permisos a la carpeta de almacenamiento y bootstrap
-#RUN chmod -R 777 storage bootstrap/cache
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 RUN chown -R www-data:www-data /var/www/public
 RUN chmod -R 755 /var/www/public
@@ -40,17 +30,10 @@ RUN chmod -R 755 /var/www/public
 # Instalamos dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
 RUN apt-get update && apt-get install -y iproute2
-RUN echo "PHP-FPM Internal IP: $(hostname -I)" 
-
 RUN ls -l /var/www/resources/views
 
-
-# Expone el puerto 80 para Nginx
+# Expone el puerto 80
 EXPOSE 80
 
-# Inicia Nginx y PHP-FPM al mismo tiempo
-#CMD ["sh", "-c", "service nginx start && php-fpm -F"]
-#CMD ["sh", "-c", "service nginx start && php-fpm -F && service php8.2-fpm status"]
+# Inicia PHP-FPM y Nginx
 CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
-
-
