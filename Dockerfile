@@ -33,6 +33,8 @@ RUN chmod -R 777 storage bootstrap/cache
 # Instalamos dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
 
+RUN ls -l /var/www/public
+
 # Expone el puerto 80 para Nginx
 EXPOSE 80
 
