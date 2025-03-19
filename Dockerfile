@@ -31,7 +31,7 @@ RUN service nginx restart && nginx -t && service nginx status
 
 # Damos permisos a la carpeta de almacenamiento y bootstrap
 #RUN chmod -R 777 storage bootstrap/cache
-RUN chmod -R 755 /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 RUN chown -R www-data:www-data /var/www/public
 RUN chmod -R 755 /var/www/public
 
